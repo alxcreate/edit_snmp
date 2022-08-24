@@ -1,11 +1,11 @@
-from pysnmp import hlapi
+from pysnmp.hlapi import *
 
 
-def snmp_get(target, oids, credentials, port=161, engine=hlapi.SnmpEngine(), context=hlapi.ContextData()):
-    handler = hlapi.getCmd(
+def snmp_get(target, oids, credentials, port=161, timeout=0, retries=0, engine=SnmpEngine(), context=ContextData()):
+    handler = getCmd(
         engine,
         credentials,
-        hlapi.UdpTransportTarget((target, port)),
+        UdpTransportTarget((target, port, timeout, retries)),
         context,
         *construct_object_types(oids)
     )
@@ -15,7 +15,7 @@ def snmp_get(target, oids, credentials, port=161, engine=hlapi.SnmpEngine(), con
 def construct_object_types(list_of_oids):
     object_types = []
     for oid in list_of_oids:
-        object_types.append(hlapi.ObjectType(hlapi.ObjectIdentity(oid)))
+        object_types.append(ObjectType(ObjectIdentity(oid)))
     return object_types
 
 
@@ -50,20 +50,15 @@ def cast(value):
     return value
 
 
-hlapi.CommunityData('public')
-hlapi.UsmUserData('testuser', authKey='authenticationkey', privKey='encryptionkey', authProtocol=hlapi.usmHMACSHAAuthProtocol, privProtocol=hlapi.usmAesCfb128Protocol)
-
-# hostname = snmp_get('10.6.8.139', ['1.3.6.1.2.1.1.5.0'], hlapi.CommunityData('public'))
-# for i in hostname.values():
-#    print(i)
+CommunityData('public')
+UsmUserData('testuser', authKey='authenticationkey', privKey='encryptionkey', authProtocol=usmHMACSHAAuthProtocol, privProtocol=usmAesCfb128Protocol)
 
 
-
-def snmp_set(target, value_pairs, credentials, port=161, engine=hlapi.SnmpEngine(), context=hlapi.ContextData()):
-    handler = hlapi.setCmd(
+def snmp_set(target, value_pairs, credentials, port=161, timeout=1.0, retries=0, engine=SnmpEngine(), context=ContextData()):
+    handler = setCmd(
         engine,
         credentials,
-        hlapi.UdpTransportTarget((target, port)),
+        UdpTransportTarget((target, port, timeout, retries)),
         context,
         *construct_value_pairs(value_pairs)
     )
@@ -73,7 +68,5 @@ def snmp_set(target, value_pairs, credentials, port=161, engine=hlapi.SnmpEngine
 def construct_value_pairs(list_of_pairs):
     pairs = []
     for key, value in list_of_pairs.items():
-        pairs.append(hlapi.ObjectType(hlapi.ObjectIdentity(key), value))
+        pairs.append(ObjectType(ObjectIdentity(key), value))
     return pairs
-
-# set('10.6.8.139', {'1.3.6.1.2.1.1.5.0': 'SNMPHost'}, hlapi.CommunityData('ICTSHORE'))

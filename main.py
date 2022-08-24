@@ -265,7 +265,7 @@ class MainWindow(QMainWindow):
 		try:
 			socket.inet_aton(self.ip)
 			try:
-				response = os.system("ping -n 1 " + self.ip)
+				response = os.system("ping -c 1 -W 1 " + self.ip)
 				if response == 0:
 					self.label_ip.setText(f'{self.label_ip_title} {self.label_status_ok}')
 				else:
@@ -278,7 +278,7 @@ class MainWindow(QMainWindow):
 	def descr_get(self):
 		self.label_descr.setText(f'{self.label_descr_title} {self.label_status_wait}')
 		try:
-			self.descr = snmp_get(self.ip, [self.descr_oid], hlapi.CommunityData(self.community_get))
+			self.descr = snmp_get(self.ip, [self.descr_oid], CommunityData(self.community_get))
 			for i in self.descr.values():
 				self.line_descr.setText(str(i))
 			self.label_descr.setText(f'{self.label_descr_title} {self.label_status_ok}')
@@ -289,7 +289,7 @@ class MainWindow(QMainWindow):
 	def descr_set(self):
 		self.label_descr.setText(f'{self.label_descr_title} {self.label_status_wait}')
 		try:
-			snmp_set(self.ip, {self.descr_oid: self.descr}, hlapi.CommunityData(self.community_set))
+			snmp_set(self.ip, {self.descr_oid: self.descr}, CommunityData(self.community_set))
 			self.label_descr.setText(f'{self.label_descr_title} {self.label_status_ok}')
 		except Exception:
 			self.label_descr.setText(f'{self.label_descr_title} {self.label_status_error}')
@@ -297,7 +297,7 @@ class MainWindow(QMainWindow):
 	def object_id_get(self):
 		self.label_object_id.setText(f'{self.label_object_id_title} {self.label_status_wait}')
 		try:
-			self.object_id = snmp_get(self.ip, [self.object_id_oid], hlapi.CommunityData(self.community_get))
+			self.object_id = snmp_get(self.ip, [self.object_id_oid], CommunityData(self.community_get))
 			for i in self.object_id.values():
 				self.line_object_id.setText(str(i))
 			self.label_object_id.setText(f'{self.label_object_id_title} {self.label_status_ok}')
@@ -308,7 +308,7 @@ class MainWindow(QMainWindow):
 	def object_id_set(self):
 		self.label_object_id.setText(f'{self.label_object_id_title} {self.label_status_wait}')
 		try:
-			snmp_set(self.ip, {self.object_id_oid: self.object_id}, hlapi.CommunityData(self.community_set))
+			snmp_set(self.ip, {self.object_id_oid: self.object_id}, CommunityData(self.community_set))
 			self.label_object_id.setText(f'{self.label_object_id_title} {self.label_status_ok}')
 		except Exception:
 			self.label_object_id.setText(f'{self.label_object_id_title} {self.label_status_error}')
@@ -316,7 +316,7 @@ class MainWindow(QMainWindow):
 	def uptime_get(self):
 		self.label_uptime.setText(f'{self.label_uptime_title} {self.label_status_wait}')
 		try:
-			self.uptime = snmp_get(self.ip, [self.uptime_oid], hlapi.CommunityData(self.community_get))
+			self.uptime = snmp_get(self.ip, [self.uptime_oid], CommunityData(self.community_get))
 			for i in self.uptime.values():
 				self.line_uptime.setText(str(datetime.timedelta(seconds=(round(i/100, 0)))))
 			self.label_uptime.setText(f'{self.label_uptime_title} {self.label_status_ok}')
@@ -327,7 +327,7 @@ class MainWindow(QMainWindow):
 	def uptime_set(self):
 		self.label_uptime.setText(f'{self.label_uptime_title} {self.label_status_wait}')
 		try:
-			snmp_set(self.ip, {self.uptime_oid: self.uptime}, hlapi.CommunityData(self.community_set))
+			snmp_set(self.ip, {self.uptime_oid: self.uptime}, CommunityData(self.community_set))
 			self.label_uptime.setText(f'{self.label_uptime_title} {self.label_status_ok}')
 		except Exception:
 			self.label_uptime.setText(f'{self.label_uptime_title} {self.label_status_error}')
@@ -335,7 +335,7 @@ class MainWindow(QMainWindow):
 	def contact_get(self):
 		self.label_contact.setText(f'{self.label_contact_title} {self.label_status_wait}')
 		try:
-			self.contact = snmp_get(self.ip, [self.contact_oid], hlapi.CommunityData(self.community_get))
+			self.contact = snmp_get(self.ip, [self.contact_oid], CommunityData(self.community_get))
 			for i in self.contact.values():
 				self.line_contact.setText(str(i))
 			self.label_contact.setText(f'{self.label_contact_title} {self.label_status_ok}')
@@ -346,7 +346,7 @@ class MainWindow(QMainWindow):
 	def contact_set(self):
 		self.label_contact.setText(f'{self.label_contact_title} {self.label_status_wait}')
 		try:
-			snmp_set(self.ip, {self.contact_oid: self.contact}, hlapi.CommunityData(self.community_set))
+			snmp_set(self.ip, {self.contact_oid: self.contact}, CommunityData(self.community_set))
 			self.label_contact.setText(f'{self.label_contact_title} {self.label_status_ok}')
 		except Exception:
 			self.label_contact.setText(f'{self.label_contact_title} {self.label_status_error}')
@@ -354,7 +354,7 @@ class MainWindow(QMainWindow):
 	def name_get(self):
 		self.label_name.setText(f'{self.label_name_title} {self.label_status_wait}')
 		try:
-			self.name = snmp_get(self.ip, [self.name_oid], hlapi.CommunityData(self.community_get))
+			self.name = snmp_get(self.ip, [self.name_oid], CommunityData(self.community_get))
 			for i in self.name.values():
 				self.line_name.setText(str(i))
 			self.label_name.setText(f'{self.label_name_title} {self.label_status_ok}')
@@ -365,7 +365,7 @@ class MainWindow(QMainWindow):
 	def name_set(self):
 		self.label_name.setText(f'{self.label_name_title} {self.label_status_wait}')
 		try:
-			snmp_set(self.ip, {self.name_oid: self.name}, hlapi.CommunityData(self.community_set))
+			snmp_set(self.ip, {self.name_oid: self.name}, CommunityData(self.community_set))
 			self.label_name.setText(f'{self.label_name_title} {self.label_status_ok}')
 		except Exception:
 			self.label_name.setText(f'{self.label_name_title} {self.label_status_error}')
@@ -373,7 +373,7 @@ class MainWindow(QMainWindow):
 	def location_get(self):
 		self.label_location.setText(f'{self.label_location_title} {self.label_status_wait}')
 		try:
-			self.location = snmp_get(self.ip, [self.location_oid], hlapi.CommunityData(self.community_get))
+			self.location = snmp_get(self.ip, [self.location_oid], CommunityData(self.community_get))
 			for i in self.location.values():
 				self.line_location.setText(str(i))
 			self.label_location.setText(f'{self.label_location_title} {self.label_status_ok}')
@@ -384,7 +384,7 @@ class MainWindow(QMainWindow):
 	def location_set(self):
 		self.label_location.setText(f'{self.label_location_title} {self.label_status_wait}')
 		try:
-			snmp_set(self.ip, {self.location_oid: self.location}, hlapi.CommunityData(self.community_set))
+			snmp_set(self.ip, {self.location_oid: self.location}, CommunityData(self.community_set))
 			self.label_location.setText(f'{self.label_location_title} {self.label_status_ok}')
 		except Exception:
 			self.label_location.setText(f'{self.label_location_title} {self.label_status_error}')
