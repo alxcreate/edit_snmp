@@ -1,6 +1,6 @@
 import os
 import sys
-import time
+import datetime
 
 from PyQt6.QtCore import *
 from PyQt6.QtWidgets import *
@@ -323,8 +323,7 @@ class MainWindow(QMainWindow):
 		try:
 			self.uptime = snmp_get(self.ip, [self.uptime_oid], hlapi.CommunityData(self.community_get))
 			for i in self.uptime.values():
-				# self.line_uptime.setText(str(i/100))
-				self.line_uptime.setText(time.strftime("%Y %H:%M:%S", time.gmtime(i/100)))
+				self.line_uptime.setText(str(datetime.timedelta(seconds=(round(i/100, 0)))))
 			self.label_uptime.setText(f'{self.label_uptime_title} {self.label_status_ok}')
 		except Exception:
 			self.line_uptime.setText('')
