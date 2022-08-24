@@ -2,8 +2,9 @@ import os
 import sys
 import datetime
 
-from PyQt6.QtCore import *
-from PyQt6.QtWidgets import *
+from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtWidgets import QMainWindow, QLabel, QLineEdit, QPushButton, QVBoxLayout, QGridLayout, QHBoxLayout, QWidget, \
+	QApplication
 from snmp import *
 import socket
 
@@ -13,7 +14,7 @@ class MainWindow(QMainWindow):
 		super(MainWindow, self).__init__()
 
 		self.setWindowTitle("Edit SNMP")
-		self.setFixedSize(QSize(400, 500))
+		# self.setFixedSize(QSize(400, 500))
 
 		self.community_get = 'public'
 		self.community_set = 'private'
@@ -42,8 +43,8 @@ class MainWindow(QMainWindow):
 		self.label_name_title = 'Name:'
 		self.label_location_title = 'Location:'
 
-		self.label_status_ip_incorrect = 'Incorrect address'
-		self.label_status_ip_unavailable = 'Unavailable address'
+		self.label_status_ip_incorrect = 'Incorrect'
+		self.label_status_ip_unavailable = 'Unavailable'
 		self.label_status_wait = 'Wait...'
 		self.label_status_ok = 'Ok'
 		self.label_status_error = 'Error'
@@ -73,14 +74,14 @@ class MainWindow(QMainWindow):
 		self.line_ip.textEdited.connect(self.edit_ip)
 		self.line_ip.setText(self.ip)
 
-		self.button_ip_check = QPushButton(self.button_check)
-		self.button_ip_check.clicked.connect(self.ip_check)
-
 		self.button_get_all = QPushButton(self.button_get_all)
 		self.button_get_all.clicked.connect(self.get_all)
 
 		self.button_set_all = QPushButton(self.button_set_all)
 		self.button_set_all.clicked.connect(self.set_all)
+
+		self.button_ip_check = QPushButton(self.button_check)
+		self.button_ip_check.clicked.connect(self.ip_check)
 		###################
 		self.label_descr = QLabel(self.label_descr_title)
 
@@ -160,62 +161,56 @@ class MainWindow(QMainWindow):
 		self.layout.setSpacing(5)
 
 		self.layout_community = QGridLayout()
+		self.layout_community.setColumnMinimumWidth(0, 90)
+		self.layout_community.setColumnMinimumWidth(2, 90)
 		self.layout_community.setContentsMargins(0, 0, 0, 10)
 		self.layout.addLayout(self.layout_community)
+
 		self.layout_community.addWidget(self.label_community_get, 0, 0)
-		self.layout_community.addWidget(self.label_community_set, 0, 1)
-		self.layout_community.addWidget(self.line_community_get, 1, 0)
-		self.layout_community.addWidget(self.line_community_set, 1, 1)
+		self.layout_community.addWidget(self.label_community_set, 0, 2)
+		self.layout_community.addWidget(self.line_community_get, 0, 1)
+		self.layout_community.addWidget(self.line_community_set, 0, 3)
 
-		self.layout_ip = QHBoxLayout()
-		self.layout.addWidget(self.label_ip)
-		self.layout.addLayout(self.layout_ip)
-		self.layout_ip.addWidget(self.line_ip)
-		self.layout_ip.addWidget(self.button_ip_check)
-		self.layout_ip.addWidget(self.button_get_all)
-		self.layout_ip.addWidget(self.button_set_all)
+		self.layout_body = QGridLayout()
+		self.layout_body.setColumnMinimumWidth(0, 100)
+		self.layout_body.setColumnMinimumWidth(1, 300)
+		self.layout.addLayout(self.layout_body)
 
-		self.layout_descr = QHBoxLayout()
-		self.layout.addWidget(self.label_descr)
-		self.layout.addLayout(self.layout_descr)
-		self.layout_descr.addWidget(self.line_descr)
-		self.layout_descr.addWidget(self.button_descr_get)
-		self.layout_descr.addWidget(self.button_descr_set)
+		self.layout_body.addWidget(self.label_ip, 1, 0)
+		self.layout_body.addWidget(self.line_ip, 1, 1)
+		self.layout_body.addWidget(self.button_get_all, 1, 2)
+		self.layout_body.addWidget(self.button_set_all, 1, 3)
+		self.layout_body.addWidget(self.button_ip_check, 1, 4)
 
-		self.layout_object_id = QHBoxLayout()
-		self.layout.addWidget(self.label_object_id)
-		self.layout.addLayout(self.layout_object_id)
-		self.layout_object_id.addWidget(self.line_object_id)
-		self.layout_object_id.addWidget(self.button_object_id_get)
-		self.layout_object_id.addWidget(self.button_object_id_set)
+		self.layout_body.addWidget(self.label_descr, 2, 0)
+		self.layout_body.addWidget(self.line_descr, 2, 1)
+		self.layout_body.addWidget(self.button_descr_get, 2, 2)
+		# self.layout_body.addWidget(self.button_descr_set, 2, 3)
 
-		self.layout_uptime = QHBoxLayout()
-		self.layout.addWidget(self.label_uptime)
-		self.layout.addLayout(self.layout_uptime)
-		self.layout_uptime.addWidget(self.line_uptime)
-		self.layout_uptime.addWidget(self.button_uptime_get)
-		self.layout_uptime.addWidget(self.button_uptime_set)
+		self.layout_body.addWidget(self.label_object_id, 3, 0)
+		self.layout_body.addWidget(self.line_object_id, 3, 1)
+		self.layout_body.addWidget(self.button_object_id_get, 3, 2)
+		# self.layout_body.addWidget(self.button_object_id_set, 3, 3)
 
-		self.layout_contact = QHBoxLayout()
-		self.layout.addWidget(self.label_contact)
-		self.layout.addLayout(self.layout_contact)
-		self.layout_contact.addWidget(self.line_contact)
-		self.layout_contact.addWidget(self.button_contact_get)
-		self.layout_contact.addWidget(self.button_contact_set)
+		self.layout_body.addWidget(self.label_uptime, 4, 0)
+		self.layout_body.addWidget(self.line_uptime, 4, 1)
+		self.layout_body.addWidget(self.button_uptime_get, 4, 2)
+		# self.layout_body.addWidget(self.button_uptime_set, 4, 3)
 
-		self.layout_name = QHBoxLayout()
-		self.layout.addWidget(self.label_name)
-		self.layout.addLayout(self.layout_name)
-		self.layout_name.addWidget(self.line_name)
-		self.layout_name.addWidget(self.button_name_get)
-		self.layout_name.addWidget(self.button_name_set)
+		self.layout_body.addWidget(self.label_contact, 5, 0)
+		self.layout_body.addWidget(self.line_contact, 5, 1)
+		self.layout_body.addWidget(self.button_contact_get, 5, 2)
+		self.layout_body.addWidget(self.button_contact_set, 5, 3)
 
-		self.layout_location = QHBoxLayout()
-		self.layout.addWidget(self.label_location)
-		self.layout.addLayout(self.layout_location)
-		self.layout_location.addWidget(self.line_location)
-		self.layout_location.addWidget(self.button_location_get)
-		self.layout_location.addWidget(self.button_location_set)
+		self.layout_body.addWidget(self.label_name, 6, 0)
+		self.layout_body.addWidget(self.line_name, 6, 1)
+		self.layout_body.addWidget(self.button_name_get, 6, 2)
+		self.layout_body.addWidget(self.button_name_set, 6, 3)
+
+		self.layout_body.addWidget(self.label_location, 7, 0)
+		self.layout_body.addWidget(self.line_location, 7, 1)
+		self.layout_body.addWidget(self.button_location_get, 7, 2)
+		self.layout_body.addWidget(self.button_location_set, 7, 3)
 
 		# END
 		widget = QWidget()
@@ -249,21 +244,6 @@ class MainWindow(QMainWindow):
 	def edit_location(self, location):
 		self.location = location
 
-	def ip_check(self):
-		self.label_ip.setText(f'{self.label_ip_title} {self.label_status_wait}')
-		try:
-			socket.inet_aton(self.ip)
-			try:
-				response = os.system("ping -c 1 " + self.ip)
-				if response == 0:
-					self.label_ip.setText(f'{self.label_ip_title} {self.label_status_ok}')
-				else:
-					self.label_ip.setText(f'{self.label_ip_title} {self.label_status_ip_unavailable}')
-			except Exception:
-				self.label_ip.setText(f'{self.label_ip_title} {self.label_status_error}')
-		except socket.error:
-			self.label_ip.setText(f'{self.label_ip_title} {self.label_status_ip_incorrect}')
-
 	def get_all(self):
 		self.descr_get()
 		self.object_id_get()
@@ -279,6 +259,21 @@ class MainWindow(QMainWindow):
 		self.contact_set()
 		self.name_set()
 		self.location_set()
+
+	def ip_check(self):
+		self.label_ip.setText(f'{self.label_ip_title} {self.label_status_wait}')
+		try:
+			socket.inet_aton(self.ip)
+			try:
+				response = os.system("ping -n 1 " + self.ip)
+				if response == 0:
+					self.label_ip.setText(f'{self.label_ip_title} {self.label_status_ok}')
+				else:
+					self.label_ip.setText(f'{self.label_ip_title} {self.label_status_ip_unavailable}')
+			except Exception:
+				self.label_ip.setText(f'{self.label_ip_title} {self.label_status_error}')
+		except socket.error:
+			self.label_ip.setText(f'{self.label_ip_title} {self.label_status_ip_incorrect}')
 
 	def descr_get(self):
 		self.label_descr.setText(f'{self.label_descr_title} {self.label_status_wait}')
@@ -351,7 +346,7 @@ class MainWindow(QMainWindow):
 	def contact_set(self):
 		self.label_contact.setText(f'{self.label_contact_title} {self.label_status_wait}')
 		try:
-			snmp_set(self.ip, {self.contact_oid: str(self.contact)}, hlapi.CommunityData(self.community_set))
+			snmp_set(self.ip, {self.contact_oid: self.contact}, hlapi.CommunityData(self.community_set))
 			self.label_contact.setText(f'{self.label_contact_title} {self.label_status_ok}')
 		except Exception:
 			self.label_contact.setText(f'{self.label_contact_title} {self.label_status_error}')
