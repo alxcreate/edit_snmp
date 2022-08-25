@@ -1,7 +1,7 @@
 from pysnmp.hlapi import *
 
 
-def snmp_get(target, oids, credentials, port=161, timeout=0, retries=0, engine=SnmpEngine(), context=ContextData()):
+def snmp_get(target, oids, credentials, port=161, timeout=1, retries=0, engine=SnmpEngine(), context=ContextData()):
     handler = getCmd(
         engine,
         credentials,
@@ -50,11 +50,11 @@ def cast(value):
     return value
 
 
-CommunityData('public')
-UsmUserData('testuser', authKey='authenticationkey', privKey='encryptionkey', authProtocol=usmHMACSHAAuthProtocol, privProtocol=usmAesCfb128Protocol)
+# CommunityData('public')
+# UsmUserData('testuser', authKey='authenticationkey', privKey='encryptionkey', authProtocol=usmHMACSHAAuthProtocol, privProtocol=usmAesCfb128Protocol)
 
 
-def snmp_set(target, value_pairs, credentials, port=161, timeout=1.0, retries=0, engine=SnmpEngine(), context=ContextData()):
+def snmp_set(target, value_pairs, credentials, port=161, timeout=1, retries=0, engine=SnmpEngine(), context=ContextData()):
     handler = setCmd(
         engine,
         credentials,
