@@ -172,7 +172,7 @@ class MainWindow(QMainWindow):
         self.layout_body.addWidget(self.line_ip, 1, 1)
         self.layout_body.addWidget(self.button_get_all, 1, 2)
         self.layout_body.addWidget(self.button_set_all, 1, 3)
-        self.layout_body.addWidget(self.button_ip_check, 1, 4)
+        # self.layout_body.addWidget(self.button_ip_check, 1, 4)
 
         self.layout_body.addWidget(self.label_descr, 2, 0)
         self.layout_body.addWidget(self.line_descr, 2, 1)
